@@ -1,3 +1,11 @@
+/*Added 3 new cases for a total of 6 autonomous options 
+(leftStartAlpha, 
+midStartAlpha, 
+rightStartAlpha, 
+leftStartBeta, 
+midStartBeta, 
+rightStartBeta)*/
+
 package org.usfirst.frc.team5510.robot;
  
 import edu.wpi.first.wpilibj.IterativeRobot;
