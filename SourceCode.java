@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 //import edu.wpi.first.wpilibj.Timer.StaticInterface;
 import edu.wpi.first.wpilibj.Victor;
-importedu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  
 //
@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //
  
  
-public class Robot extends IterativeRobot implementsPIDOutput{
+public class Robot extends IterativeRobot implements PIDOutput{
     final String defaultAuto = "Default";
     final String customAuto = "My Auto";
     final String backUpPlan = "Base Line Auto";
@@ -26,7 +26,7 @@ public class Robot extends IterativeRobot implementsPIDOutput{
     final String leftStart = "Left Start";
     final String midStart = "Mid Start";
     String autoSelected;
-    SendableChooser <String> chooser = newSendableChooser<>();
+    SendableChooser <String> chooser = new SendableChooser<>();
    
     RobotDrive eggroll;
     RobotDrive tomato;
@@ -107,7 +107,7 @@ public class Robot extends IterativeRobot implementsPIDOutput{
         chooser.addObject("Right Start" , rightStart);
         chooser.addObject("Left Start", leftStart);
         chooser.addObject("Mid Start", midStart);
-        System.out.println("Auto selected: " +autoSelected);
+        System.out.println("Auto selected: " + autoSelected);
         //System.out.println("Auto Timer: " + autoTimer.get());
         autoTimerStart = Timer.getFPGATimestamp();
        
@@ -154,4 +154,177 @@ public class Robot extends IterativeRobot implementsPIDOutput{
             }
             else if (timeElapsed==15){
                 eggroll.drive(0.0, 0.0);          
-                eggroll.setSafetyEnabled(true)
+                eggroll.setSafetyEnabled(true);
+            }
+            break;
+           
+        case leftStart:
+            //Put Left Start Code here
+           
+            if (timeElapsed <2) {
+                eggroll.drive(-0.6, 0.5);
+            }
+           
+            else if (timeElapsed <5){
+                eggroll.drive(0.0, 0.0);
+                eggroll.setSafetyEnabled(true);
+            }
+            break;
+        case rightStart:
+            //Put Right Start Code here
+            if (timeElapsed<2){
+                eggroll.drive(-0.5, 0.5);
+            }
+            else if (timeElapsed<5){
+                eggroll.drive(0.5, 0.5);
+            }
+            else if (timeElapsed<6){
+                eggroll.drive(0.0, 0.0);
+                eggroll.setSafetyEnabled(true);
+            }
+            break;
+        default:
+           
+           
+           
+           
+           
+           
+           
+           
+            /*int a = 0;
+            for(a = 0; a < 2; a++){
+                eggroll.drive(-0.2, 0.0);
+            }
+            eggroll.drive(-0.1, 0.2);
+            int b = 0;
+            for(b = 0; b < 2; b++){
+                eggroll.drive(0.5,  0.0);
+            }
+            // Put default auto code here
+            */
+       
+       
+       
+            /*while(!haha)
+               
+               
+            for (int x = 1; x < 3; x= x +1){
+                    eggroll.drive(-0.1, 0.0);  
+               
+            if (x == 3){
+            autoTimer.stop();
+            haha = true;
+            eggroll.drive(0.0,0.0);
+            }
+            */
+                   
+                /* autoTimer.stop();
+                 erroll.drive(-0.1, 0.6); Turn*/
+ 
+           
+            break;
+               
+       
+        }
+    }
+ 
+ 
+@Override
+    public void teleopPeriodic() {
+        eggroll.setSafetyEnabled(true);
+        smartBoardData();
+        switchDrive();
+        xboxDrive();
+        highGoalSucks();
+        iceClimbers();
+    }
+ 
+    /**
+     * This function is called periodically during test mode
+     */
+    @Override
+    public void testPeriodic() {
+ 
+    }
+   
+    public void pidWrite(double output){
+       
+    }  
+   
+    //double throttle = (-xboxController.getThrottle() + 1.0d) / 2.0d;
+   
+   
+    private void xboxDrive(){           //system for determining which speed desired. Joystick.getRawAxis(Axis Number)*Speed[Range:0-1.0]
+        if (forwardDrive){
+            if ((xboxController.getRawButton(5)) ) {
+                eggroll.tankDrive(-xboxController.getRawAxis(5) * -0.5, -xboxController.getRawAxis(1) * -0.5, true);
+               
+                //eggroll.tankDrive(xboxController.getRawAxis(5) * ((-xboxController.getThrottle()+1/2)), xboxController.getRawAxis(1) * ((xboxController.getThrottle()+1/2)), true;
+            }
+            else if (xboxController.getRawButton(6)){       //HIT THE NOS
+                eggroll.tankDrive(-xboxController.getRawAxis(5) * -0.5, -xboxController.getRawAxis(1) * -0.5, true);
+            }
+            else {
+                eggroll.tankDrive(xboxController.getRawAxis(5) * 0.7, xboxController.getRawAxis(1) * 0.7, true);
+                //eggroll.tankDrive(xboxController.getRawAxis(5) * 0.7, xboxController.getRawAxis(1) * 0.7, true);
+            }
+        }
+        else{
+            if ((xboxController.getRawButton(5)) ) {
+                eggroll.tankDrive(-xboxController.getRawAxis(1) * 0.5, -xboxController.getRawAxis(5) * 0.5, true);
+                }
+            else if (xboxController.getRawButton(6)){       //HIT THE NOS
+                eggroll.tankDrive(-xboxController.getRawAxis(1) * 0.85, -xboxController.getRawAxis(5) * 0.85, true);
+                }
+            else {
+                eggroll.tankDrive(-xboxController.getRawAxis(1) * 0.7, -xboxController.getRawAxis(5) * 0.7, true);
+                }
+            }
+    }
+   
+    private void switchDrive(){
+        if (xboxController.getRawButton(4)){
+            if (!reverseDrive){
+            forwardDrive=!forwardDrive;
+            reverseDrive=true;
+            }
+        }
+            else{
+                reverseDrive=false;
+            }
+    }
+   
+ 
+   
+   
+    private void highGoalSucks(){   // method for dumping balls
+       
+    }
+   
+    private void smartBoardData(){
+        SmartDashboard.putBoolean("Forward Mode", forwardDrive);
+       
+    }
+   
+    private void iceClimbers(){ //method for climbing onto the ship
+        if (xboxController.getRawButton(3)){
+            iceClimb.set(-1);
+           
+        }
+       
+        if (xboxController.getRawButton(1)) {
+            iceClimb.set(0);
+        }
+       
+        if (xboxController.getRawButton(2)) {
+            iceClimb.set(1);
+        }
+       
+       
+        //if ((xboxController.getRawButton(2)) ) {
+            //eggroll.tankDrive(-xboxController.getRawAxis(1) * 0.5, -xboxController.getRawAxis(5) * 0.5, true);
+            //}
+    }
+ 
+}
